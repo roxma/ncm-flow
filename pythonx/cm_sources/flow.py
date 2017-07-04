@@ -39,7 +39,7 @@ class Source(Base):
         col = ctx['col']
         typed = ctx['typed']
 
-        args = [self.flowpath, 'autocomplete', '--json', '--pretty', filepath, str(lnum), str(col)]
+        args = [self.flowpath, 'autocomplete', '--quiet', '--json', '--pretty', filepath, str(lnum), str(col)]
 
         logger.debug("args: %s", args)
 
