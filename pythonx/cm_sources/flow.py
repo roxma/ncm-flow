@@ -18,6 +18,7 @@ register_source(name='flow',
 
 import json
 import subprocess
+import os
 from os import path
 from sys import stdout
 
@@ -39,7 +40,10 @@ class Source(Base):
         col = ctx['col']
         typed = ctx['typed']
 
-        args = [self.flowpath, 'autocomplete', '--quiet', '--json', '--pretty', filepath, str(lnum), str(col)]
+        if os.access(filepath, os.R_OK):
+            args = [self.flowpath, 'autocomplete', '--quiet', '--json', '--pretty', filepath, str(lnum), str(col)]
+        else:
+            args = [self.flowpath, 'autocomplete', '--quiet', '--json', '--pretty', str(lnum), str(col)]
 
         logger.debug("args: %s", args)
 
