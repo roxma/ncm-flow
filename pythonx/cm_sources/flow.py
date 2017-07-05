@@ -54,12 +54,17 @@ class Source(Base):
 
         proc = subprocess.Popen(args=args,
                                 stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE,)
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
 
         result, errs = proc.communicate(src.encode('utf-8'), timeout=30)
+        errs = errs.decode()
+        if errs:
+            logger.error("error: [%s]", errs)
+            self.message('error', errs)
+
         result = json.loads(result.decode())['result']
 
-        logger.debug("src: [%s]", src)
         logger.debug("result: %s", result)
 
         matches = []
