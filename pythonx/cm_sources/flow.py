@@ -61,7 +61,7 @@ class Source(Base):
         errs = errs.decode()
         if errs:
             logger.error("error: [%s]", errs)
-            self.message('error', errs)
+            self.message('warning', errs)
 
         result = json.loads(result.decode())['result']
 
