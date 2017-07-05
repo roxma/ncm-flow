@@ -31,6 +31,10 @@ class Source(Base):
 
         self.flowpath = nvim.eval('get(g:, "flow#flowpath", "flow")')
 
+        from distutils.spawn import find_executable
+        if not find_executable(self.flowpath):
+            self.message('error', 'Can not find [%s] binary. Please check your installation or g:flow#flowpath' % self.flowpath)
+
     def cm_refresh(self, info, ctx, *args):
 
         typed = ctx['typed']
