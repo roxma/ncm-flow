@@ -14,7 +14,8 @@ register_source(name='flow',
                 abbreviation='',
                 priority=9,
                 scopes=['javascript'],
-                cm_refresh_patterns=[r'\.$'],)
+                word_pattern=r'[\w$\-]+',
+                cm_refresh_patterns=[r'\.'],)
 
 import json
 import subprocess
