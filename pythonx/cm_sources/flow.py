@@ -21,7 +21,7 @@ import json
 import subprocess
 import os
 from os import path
-from sys import stdout
+from sys import stdout, platform
 
 logger = getLogger(__name__)
 
@@ -35,6 +35,13 @@ class Source(Base):
         from distutils.spawn import find_executable
         if not find_executable(self.flowpath):
             self.message('error', 'Can not find [%s] binary. Please check your installation or g:flow#flowpath' % self.flowpath)
+            localflow = path.join(nvim.eval('getcwd()'), 'node_modules', 'flow-bin')
+            osname = { 'win32': 'win64', 'darwin': 'osx', 'linux': 'linux' }[platform]
+            version = [v for v in os.listdir(localflow) if osname in v][0]
+            localflow = path.join(localflow, version, 'flow')
+            if find_executable(localflow):
+                self.message('message', "Local flow being used: [%s]" % localflow)
+                self.flowpath = localflow
 
     def cm_refresh(self, info, ctx, *args):
 
