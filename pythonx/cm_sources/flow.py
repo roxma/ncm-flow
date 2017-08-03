@@ -31,17 +31,18 @@ class Source(Base):
         super(Source, self).__init__(nvim)
 
         self.flowpath = nvim.eval('get(g:, "flow#flowpath", "flow")')
-
         from distutils.spawn import find_executable
-        if not find_executable(self.flowpath):
-            self.message('error', 'Can not find [%s] binary. Please check your installation or g:flow#flowpath' % self.flowpath)
-            localflow = path.join(nvim.eval('getcwd()'), 'node_modules', 'flow-bin')
-            osname = { 'win32': 'win64', 'darwin': 'osx', 'linux': 'linux' }[platform]
-            version = [v for v in os.listdir(localflow) if osname in v][0]
-            localflow = path.join(localflow, version, 'flow')
-            if find_executable(localflow):
-                self.message('message', "Local flow being used: [%s]" % localflow)
-                self.flowpath = localflow
+        localflow = path.join(nvim.eval('getcwd()'), 'node_modules', 'flow-bin')
+        osname = { 'win32': 'win64', 'darwin': 'osx', 'linux': 'linux' }[platform]
+        version = [v for v in os.listdir(localflow) if osname in v][0]
+        localflow = path.join(localflow, version, 'flow')
+
+        if find_executable(localflow):
+            self.flowpath = localflow
+        elif find_executable(self.flowpath):
+            self.message('message', "No local flow, falling back to globally defined flow: [%s]" % self.flowpath)
+        else:
+            self.message('error', "No flow binary found locally or globally. Please check your setup.")
 
     def cm_refresh(self, info, ctx, *args):
 
