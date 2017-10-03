@@ -32,12 +32,13 @@ class Source(Base):
 
         self.flowpath = nvim.eval('get(g:, "flow#flowpath", "flow")')
         from distutils.spawn import find_executable
+
         localflow = path.join(nvim.eval('getcwd()'), 'node_modules', 'flow-bin')
-        osname = { 'win32': 'win64', 'darwin': 'osx', 'linux': 'linux' }[platform]
-        version = [v for v in os.listdir(localflow) if osname in v][0]
-        localflow = path.join(localflow, version, 'flow')
 
         if find_executable(localflow):
+            osname = { 'win32': 'win64', 'darwin': 'osx', 'linux': 'linux' }[platform]
+            version = [v for v in os.listdir(localflow) if osname in v][0]
+            localflow = path.join(localflow, version, 'flow')
             self.flowpath = localflow
         elif find_executable(self.flowpath):
             self.message('message', "No local flow, falling back to globally defined flow: [%s]" % self.flowpath)
